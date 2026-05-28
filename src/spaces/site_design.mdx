@@ -1,0 +1,38 @@
+---
+label: Digital Design
+slides:
+  - src: src/media/sites/applied_poetics_full_page.png
+    caption: Applied Poetics
+    client: Applied Poetics
+    role: Art Direction & Design
+    tags: ["Editorial", "Web", "Typography"]
+    fill: true
+    url: https://appliedpoetics.org
+  - src: src/media/sites/vagabound_full_page.png
+    caption: Vagabound Books
+    client: Vagabound Books
+    role: Design & Development
+    tags: ["E-commerce", "Web"]
+    fill: true
+    url: https://vagaboundbooks.com
+  - src: src/media/sites/container_full_page.png
+    caption: Container Press
+    client: Container
+    role: Design & Direction
+    tags: ["Web", "Identity"]
+    fill: true
+    url: https://acontainer.co
+---
+
+import Space from '../components/Space.astro';
+
+<Space
+  index={2}
+  label={frontmatter.label}
+  slides={frontmatter.slides}
+  headline="Digital & web"
+  theme="space--rose"
+  layout="vertical"
+>
+Websites, digital platforms, and interactive experiences for publishers, cultural projects, and small technology companies. Built for clarity and long-term maintainability.
+</Space>

@@ -1,27 +1,52 @@
 /* ── Scroll container ── */
 .spaces-track {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  width: 100%;
 }
 
 /* ── Each space ── */
 .space {
-  flex: 0 0 100vw;
-  width: 100vw;
-  height: 100vh;
-  scroll-snap-align: start;
+  width: 100%;
+  min-height: 100vh;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+/* Background image */
+.space.has-background-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.space-background-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 88, 140, 0.55);
+  z-index: 1;
+}
+
+.has-background-image .space-content {
+  position: relative;
+  z-index: 2;
+}
+
+.has-background-image .space-label,
+.has-background-image .space-headline,
+.has-background-image .space-body,
+.has-background-image .space-cta {
+  color: var(--fg-on-dark);
+}
+
+.has-background-image .space-cta {
+  border-color: var(--fg-on-dark);
+}
+
+.has-background-image .space-cta:hover {
+  background: var(--fg-on-dark);
+  color: var(--fg);
 }
 
 /* Content grid */
@@ -31,19 +56,17 @@
   width: min(1200px, 90vw);
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 24px;
-  padding: 64px 0 48px;
+  gap: 16px;
+  padding: 96px 0 64px;
 }
 
 .space-text {
-  grid-column: 2 / span 6;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
 .space-visual {
-  grid-column: 9 / span 4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,9 +127,8 @@
 /* Visual element */
 .space-visual-inner {
   width: 100%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 1 / 1;
   border-radius: 12px;
-  border: 1px solid currentColor;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,7 +143,7 @@
 .space-visual-inner :is(img, video, svg) {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
@@ -130,17 +152,239 @@
   max-height: 100%;
 }
 
-/* Tiled images */
-.space-visual-inner.is-tiled {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2px;
+/* Carousel */
+.carousel {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
-.space-visual-inner.is-tiled img {
+.carousel-track {
+  display: flex;
+  width: 100%;
+  gap: 16px;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.carousel-item {
+  flex: 0 0 calc(100% / 3);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  min-width: 0;
+  padding: 0;
+  border-radius: 12px;
+  background: #f6f2ee;
+  overflow: hidden;
+  height: var(--tile-height, 380px);
+}
+
+.carousel-item-image {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.carousel-item-image img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Fill mode: image fills entire tile */
+.carousel-item.is-fill {
+  position: relative;
+}
+
+.carousel-item.is-fill .carousel-item-image {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+}
+
+.carousel-item.is-fill .carousel-item-image img {
   object-fit: cover;
+  object-position: top;
+}
+
+.carousel-item.is-fill .carousel-item-meta {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: #f6f2ee;
+}
+
+.carousel-item.is-fill .carousel-client,
+.carousel-item.is-fill .carousel-role-text {
+  color: #6b6b6b;
+}
+
+.carousel-item.is-fill .carousel-caption {
+  color: #0a0a0a;
+}
+
+.carousel-item.is-fill .carousel-tag {
+  background: rgba(10, 10, 10, 0.06);
+  color: #0a0a0a;
+}
+
+.carousel-item-meta {
+  width: 100%;
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.carousel-client {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b6b6b;
+}
+
+.carousel-caption {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #0a0a0a;
+  text-decoration: none;
+}
+
+a.carousel-caption {
+  color: #03588c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a.carousel-caption:hover {
+  color: #024670;
+}
+
+.carousel-role-text {
+  font-size: 12px;
+  color: #6b6b6b;
+}
+
+.carousel-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.carousel-tag {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(10, 10, 10, 0.06);
+  color: #0a0a0a;
+  letter-spacing: 0.02em;
+}
+
+.carousel-role {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 8px;
+  margin-top: 20px;
+}
+
+.carousel-prev,
+.carousel-next {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border-on-dark);
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(4px);
+  color: var(--fg-on-dark);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s var(--ease-out);
+  flex-shrink: 0;
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+  background: rgba(10, 10, 10, 0.85);
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: background 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  padding: 0;
+}
+
+.carousel-dot.is-active {
+  background: var(--fg-on-dark);
+  transform: scale(1.3);
+}
+
+/* Vertical layout */
+.space.is-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 96px 0;
+}
+
+.space.is-vertical .space-content {
+  grid-template-rows: auto auto;
+  gap: 48px;
+  width: min(1200px, 90vw);
+}
+
+.space.is-vertical .space-body {
+  max-width: 480px;
+}
+
+.space.is-vertical .space-visual-inner {
+  aspect-ratio: auto;
+  min-height: 200px;
+  max-height: none;
+}
+
+.space.is-vertical .carousel {
+  width: 100%;
 }
 
 /* Responsive */

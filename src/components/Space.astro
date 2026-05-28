@@ -6,27 +6,120 @@ export interface Props {
   cta?: string;
   ctaHref?: string;
   theme: string;
+  slides?: Array<{ src: string; caption?: string; role?: string; client?: string; tags?: string[]; fill?: boolean; url?: string }>;
   image?: string | string[];
+  captions?: string | string[];
+  layout?: 'left' | 'right' | 'vertical';
+  backgroundImage?: string;
+  role?: string;
+  tileHeight?: number;
 }
 
-const { index, label, headline, cta, ctaHref, theme, image } = Astro.props;
+const PALETTE: Record<string, { bg: string; text: string }> = {
+  navy:   { bg: '#03588c', text: '#f6f2ee' },
+  blue:   { bg: '#adc5d9', text: '#0a0a0a' },
+  rose:   { bg: '#d99aa5', text: '#f6f2ee' },
+  peach:  { bg: '#f2b885', text: '#0a0a0a' },
+  coral:  { bg: '#f2a488', text: '#0a0a0a' },
+};
+
+const THEME_TO_COLOR: Record<string, string> = {
+  'space--navy': 'navy',
+  'space--blue': 'blue',
+  'space--rose': 'rose',
+  'space--peach': 'peach',
+  'space--coral': 'coral',
+};
+
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const { index, label, headline, cta, ctaHref, theme, slides, image, captions, layout = 'right', backgroundImage, role, tileHeight } = Astro.props;
 const displayIndex = String(index + 1).padStart(2, '0');
 
-const images = image
-  ? Array.isArray(image)
-    ? image
-    : [image]
-  : [];
-const imageCount = images.length;
-const isTiled = imageCount > 1;
+let items: Array<{ src: string; caption: string; role: string; client: string; tags: string[]; bg: string; text: string; fill: boolean; url: string }> = [];
+
+if (slides && slides.length > 0) {
+  const sectionColor = THEME_TO_COLOR[theme] || '';
+  const availableColors = shuffleArray(Object.keys(PALETTE).filter(k => k !== sectionColor));
+
+  items = slides.map((slide, i) => {
+    const colorKey = availableColors[i % availableColors.length];
+    const palette = PALETTE[colorKey];
+    return {
+      src: slide.src,
+      caption: slide.caption || '',
+      role: slide.role || '',
+      client: slide.client || '',
+      tags: slide.tags || [],
+      bg: palette.bg,
+      text: palette.text,
+      fill: slide.fill || false,
+      url: slide.url || '',
+    };
+  });
+} else {
+  const images = image
+    ? Array.isArray(image)
+      ? image
+      : [image]
+    : [];
+  const captionList = captions
+    ? Array.isArray(captions)
+      ? captions
+      : [captions]
+    : [];
+
+  const sectionColor = THEME_TO_COLOR[theme] || '';
+  const availableColors = shuffleArray(Object.keys(PALETTE).filter(k => k !== sectionColor));
+
+  items = images.map((src, i) => {
+    const colorKey = availableColors[i % availableColors.length];
+    const palette = PALETTE[colorKey];
+    return {
+      src,
+      caption: captionList[i] || '',
+      role: '',
+      client: '',
+      tags: [],
+      bg: palette.bg,
+      text: palette.text,
+      fill: false,
+      url: '',
+    };
+  });
+}
+
+const imageCount = items.length;
+const isSlider = imageCount > 1;
+
+const isLeft = layout === 'left';
+const isVertical = layout === 'vertical';
+const hasImage = items.length > 0;
+const hasVisualSlot = Astro.slots.has('visual');
+const showVisual = hasImage || hasVisualSlot;
+
+const textCol = isVertical ? '2 / span 6' : (isLeft ? '7 / span 6' : '2 / span 6');
+const visualCol = isVertical ? '1 / -1' : (isLeft ? '1 / span 4' : '9 / span 4');
+
+const itemsPerView = 3;
+const positionCount = Math.max(1, items.length - itemsPerView + 1);
 ---
 
 <section
-  class={`space ${theme}`}
+  class={`space ${theme} ${backgroundImage ? 'has-background-image' : ''} ${isVertical ? 'is-vertical' : ''}`}
   data-index={index}
+  style={backgroundImage ? `background-image: url('${backgroundImage}');` : undefined}
 >
+  {backgroundImage && <div class="space-background-overlay" />}
   <div class="space-content">
-    <div class="space-text">
+    <div class="space-text" style={`grid-column: ${textCol};${isVertical ? ' grid-row: 1;' : ''}`}>
       <span class="space-label font-sans">
         {label}
       </span>
@@ -43,18 +136,64 @@ const isTiled = imageCount > 1;
         </a>
       )}
     </div>
-    <div class="space-visual">
-      <div class={`space-visual-inner ${isTiled ? 'is-tiled' : ''} font-serif`}>
-        {isTiled ? (
-          images.map((src, i) => (
-            <img src={src} alt="" loading="lazy" />
-          ))
-        ) : images.length === 1 ? (
-          <img src={images[0]} alt="" loading="lazy" />
-        ) : (
-          <slot name="visual">{displayIndex}</slot>
-        )}
+    {showVisual && (
+      <div class="space-visual" style={`grid-column: ${visualCol};${isVertical ? ' grid-row: 2;' : ''}`}>
+        <div class={`space-visual-inner font-serif`}>
+          {isSlider ? (
+            <div class="carousel" data-position-count={positionCount} data-items-per-view={itemsPerView} style={tileHeight ? `--tile-height: ${tileHeight}px;` : undefined}>
+              <div class="carousel-track">
+                {items.map((item, itemIdx) => (
+                  <div class={`carousel-item ${item.fill ? 'is-fill' : ''}`} data-item={itemIdx}>
+                    <div class="carousel-item-image" style={!item.fill ? `background-color: ${item.bg};` : undefined}>
+                      <img src={item.src} alt={item.caption} loading="lazy" />
+                    </div>
+                    <div class="carousel-item-meta">
+                      {item.client && (
+                        <span class="carousel-client font-sans">{item.client}</span>
+                      )}
+                      {item.caption && (
+                        item.url ? (
+                          <a href={item.url} class="carousel-caption font-sans" target="_blank" rel="noopener noreferrer">{item.caption}</a>
+                        ) : (
+                          <span class="carousel-caption font-sans">{item.caption}</span>
+                        )
+                      )}
+                      {item.role && (
+                        <span class="carousel-role-text font-sans">{item.role}</span>
+                      )}
+                      {item.tags.length > 0 && (
+                        <div class="carousel-tags">
+                          {item.tags.map((tag) => (
+                            <span class="carousel-tag font-sans">{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {role && (
+                <span class="carousel-role font-sans">{role}</span>
+              )}
+              {positionCount > 1 && (
+                <div class="carousel-nav">
+                  <button class="carousel-prev" aria-label="Previous">&#8592;</button>
+                  <div class="carousel-dots">
+                    {Array.from({ length: positionCount }).map((_, dotIdx) => (
+                      <button class="carousel-dot" data-dot={dotIdx} aria-label={`Go to item ${dotIdx + 1}`} />
+                    ))}
+                  </div>
+                  <button class="carousel-next" aria-label="Next">&#8594;</button>
+                </div>
+              )}
+            </div>
+          ) : hasImage ? (
+            <img src={items[0].src} alt={items[0].caption} loading="lazy" />
+          ) : (
+            <slot name="visual" />
+          )}
+        </div>
       </div>
-    </div>
+    )}
   </div>
 </section>

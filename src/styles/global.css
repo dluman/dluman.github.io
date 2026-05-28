@@ -29,11 +29,9 @@
 }
 
 html, body {
-  height: 100%;
   font-family: var(--font-sans);
   background: var(--bg-void);
   color: var(--fg);
-  overflow: hidden;
 }
 
 .font-serif {

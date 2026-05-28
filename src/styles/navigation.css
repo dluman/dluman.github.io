@@ -97,8 +97,7 @@
 /* ── Nav arrows ── */
 .nav-arrow {
   position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 24px;
   width: 48px;
   height: 48px;
   border: 1px solid var(--border-on-dark);
@@ -121,11 +120,15 @@
 }
 
 .nav-arrow.prev {
-  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: -32px;
 }
 
 .nav-arrow.next {
-  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 32px;
 }
 
 .nav-arrow.is-hidden {

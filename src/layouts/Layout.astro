@@ -23,6 +23,42 @@ const { title = 'Douglas Luman' } = Astro.props;
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
     });
+
+    document.querySelectorAll('.carousel').forEach(carousel => {
+      const track = carousel.querySelector('.carousel-track');
+      const prevBtn = carousel.querySelector('.carousel-prev');
+      const nextBtn = carousel.querySelector('.carousel-next');
+      const dots = carousel.querySelectorAll('.carousel-dot');
+      const positionCount = parseInt(carousel.dataset.positionCount || '1');
+      let currentPosition = 0;
+
+      function getStep() {
+        const firstItem = track.querySelector('.carousel-item');
+        if (!firstItem) return 0;
+        const itemWidth = firstItem.offsetWidth;
+        const gap = parseFloat(getComputedStyle(track).gap) || 0;
+        return itemWidth + gap;
+      }
+
+      function goToPosition(index) {
+        if (index < 0) index = positionCount - 1;
+        if (index >= positionCount) index = 0;
+        currentPosition = index;
+        const step = getStep();
+        track.style.transform = `translateX(-${currentPosition * step}px)`;
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('is-active', i === currentPosition);
+        });
+      }
+
+      prevBtn.addEventListener('click', () => goToPosition(currentPosition - 1));
+      nextBtn.addEventListener('click', () => goToPosition(currentPosition + 1));
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => goToPosition(i));
+      });
+
+      goToPosition(0);
+    });
   </script>
 </body>
 </html>

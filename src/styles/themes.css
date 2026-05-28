@@ -15,10 +15,6 @@
 .space--navy a:hover {
   color: var(--coral);
 }
-.space--navy .space-visual-inner {
-  background: linear-gradient(135deg, #024670, #0469a8);
-  box-shadow: 0 0 0 1px rgba(173, 197, 217, 0.2);
-}
 
 .space--rose {
   background: var(--rose);
@@ -35,10 +31,6 @@
 }
 .space--rose a:hover {
   color: var(--coral);
-}
-.space--rose .space-visual-inner {
-  background: linear-gradient(135deg, #c98a95, #e8aab5);
-  box-shadow: 0 0 0 1px rgba(246, 242, 238, 0.2);
 }
 
 /* ── Light spaces (dark text) ── */
@@ -68,10 +60,6 @@
 .space--blue a:hover {
   color: #024670;
 }
-.space--blue .space-visual-inner {
-  background: linear-gradient(135deg, #9db5c9, #bdd5e9);
-  box-shadow: 0 0 0 1px rgba(26, 26, 46, 0.1);
-}
 
 .space--peach {
   background: var(--peach);
@@ -99,10 +87,6 @@
 .space--peach a:hover {
   color: #024670;
 }
-.space--peach .space-visual-inner {
-  background: linear-gradient(135deg, #e2a875, #facc95);
-  box-shadow: 0 0 0 1px rgba(26, 26, 46, 0.1);
-}
 
 .space--coral {
   background: var(--coral);
@@ -129,8 +113,4 @@
 }
 .space--coral a:hover {
   color: #024670;
-}
-.space--coral .space-visual-inner {
-  background: linear-gradient(135deg, #e29478, #fab498);
-  box-shadow: 0 0 0 1px rgba(26, 26, 46, 0.1);
 }

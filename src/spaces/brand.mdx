@@ -1,0 +1,42 @@
+---
+label: Branding
+slides:
+  - src: src/media/logos/vagabound_logo.png
+    caption: Vagabound Books
+    client: Vagabound Books
+    role: Design & Direction
+    tags: ["Branding", "Identity"]
+  - src: src/media/logos/ap_logo.png
+    caption: Applied Poetics
+    client: Applied Poetics
+    role: Design & Direction
+    tags: ["Branding", "Identity", "Web"]
+  - src: src/media/logos/stillhouse_logo.webp
+    caption: Still House Press
+    client: Still House Press
+    role: Art Direction
+    tags: ["Branding", "Identity"]
+  - src: src/media/logos/sts_logo.png
+    caption: So to Speak
+    client: So to Speak journal
+    role: Design & Art Direction
+    tags: ["Branding", "Identity", "Technology"]
+  - src: src/media/logos/container_logo.png
+    caption: Container
+    client: Container
+    role: Design & Art Direction
+    tags: ["Branding", "Identity", "Print"]
+---
+
+import Space from '../components/Space.astro';
+
+<Space
+  index={1}
+  label={frontmatter.label}
+  slides={frontmatter.slides}
+  headline="Brand identities"
+  theme="space--blue"
+  layout="vertical"
+>
+Brand systems, logotypes, and visual identities for publishers, technology companies, and cultural projects. Each mark is built to work across print, digital, and environmental applications.
+</Space>
