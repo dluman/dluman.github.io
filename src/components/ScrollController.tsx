@@ -10,41 +10,48 @@ const ScrollController: React.FC<ScrollControllerProps> = ({ total, labels }) =>
   const [progressWidth, setProgressWidth] = useState(0);
 
   const spacesRef = useRef<HTMLElement[]>([]);
+  const trackRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     spacesRef.current = Array.from(document.querySelectorAll<HTMLElement>('.space'));
+    trackRef.current = document.querySelector<HTMLElement>('.spaces-track');
   }, []);
 
   const goTo = useCallback((index: number) => {
     if (index < 0 || index >= total) return;
     const spaces = spacesRef.current;
     if (spaces[index]) {
-      spaces[index].scrollIntoView({ behavior: 'smooth' });
+      spaces[index].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
     }
   }, [total]);
 
   const setActive = useCallback((index: number) => {
     setCurrentIndex(index);
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    const track = trackRef.current;
+    if (!track) return;
+    const scrollLeft = track.scrollLeft;
+    const scrollWidth = track.scrollWidth - track.clientWidth;
+    const pct = scrollWidth > 0 ? (scrollLeft / scrollWidth) * 100 : 0;
     setProgressWidth(pct);
     const spaces = spacesRef.current;
     spaces.forEach((s, i) => s.classList.toggle('is-active', i === index));
   }, []);
 
   useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
     let isScrolling: number | null = null;
 
     const onScroll = () => {
       if (isScrolling !== null) window.clearTimeout(isScrolling);
       isScrolling = window.setTimeout(() => {
-        const scrollCenter = window.scrollY + window.innerHeight / 2;
+        const scrollCenter = track.scrollLeft + track.clientWidth / 2;
         const spaces = spacesRef.current;
         let closest = 0;
         let closestDist = Infinity;
         spaces.forEach((s, i) => {
-          const mid = s.offsetTop + s.clientHeight / 2;
+          const mid = s.offsetLeft + s.clientWidth / 2;
           const dist = Math.abs(scrollCenter - mid);
           if (dist < closestDist) {
             closestDist = dist;
@@ -55,19 +62,19 @@ const ScrollController: React.FC<ScrollControllerProps> = ({ total, labels }) =>
       }, 60);
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    track.addEventListener('scroll', onScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      track.removeEventListener('scroll', onScroll);
       if (isScrolling !== null) window.clearTimeout(isScrolling);
     };
   }, [setActive]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
         e.preventDefault();
         goTo(currentIndex + 1);
-      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
         e.preventDefault();
         goTo(currentIndex - 1);
       } else if (e.key === 'Home') {
@@ -84,16 +91,16 @@ const ScrollController: React.FC<ScrollControllerProps> = ({ total, labels }) =>
   }, [currentIndex, goTo, total]);
 
   useEffect(() => {
-    let touchStartY = 0;
+    let touchStartX = 0;
 
     const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.changedTouches[0].screenY;
+      touchStartX = e.changedTouches[0].screenX;
     };
 
     const onTouchEnd = (e: TouchEvent) => {
-      const dy = touchStartY - e.changedTouches[0].screenY;
-      if (Math.abs(dy) > 50) {
-        if (dy > 0) goTo(currentIndex + 1);
+      const dx = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(dx) > 50) {
+        if (dx > 0) goTo(currentIndex + 1);
         else goTo(currentIndex - 1);
       }
     };
@@ -107,12 +114,14 @@ const ScrollController: React.FC<ScrollControllerProps> = ({ total, labels }) =>
   }, [currentIndex, goTo]);
 
   useEffect(() => {
-    const scrollCenter = window.scrollY + window.innerHeight / 2;
+    const track = trackRef.current;
+    if (!track) return;
+    const scrollCenter = track.scrollLeft + track.clientWidth / 2;
     const spaces = spacesRef.current;
     let closest = 0;
     let closestDist = Infinity;
     spaces.forEach((s, i) => {
-      const mid = s.offsetTop + s.clientHeight / 2;
+      const mid = s.offsetLeft + s.clientWidth / 2;
       const dist = Math.abs(scrollCenter - mid);
       if (dist < closestDist) {
         closestDist = dist;
@@ -152,6 +161,22 @@ const ScrollController: React.FC<ScrollControllerProps> = ({ total, labels }) =>
           </React.Fragment>
         ))}
       </nav>
+
+      {/* Nav arrows */}
+      <button
+        className={`nav-arrow prev ${currentIndex === 0 ? 'is-hidden' : ''}`}
+        aria-label="Previous space"
+        onClick={() => goTo(currentIndex - 1)}
+      >
+        &#8592;
+      </button>
+      <button
+        className={`nav-arrow next ${currentIndex === total - 1 ? 'is-hidden' : ''}`}
+        aria-label="Next space"
+        onClick={() => goTo(currentIndex + 1)}
+      >
+        &#8594;
+      </button>
 
       {/* Scroll hint */}
       <div className={`scroll-hint ${currentIndex === 0 ? 'is-visible' : ''}`}>

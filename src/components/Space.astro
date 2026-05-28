@@ -13,6 +13,7 @@ export interface Props {
   backgroundImage?: string;
   role?: string;
   tileHeight?: number;
+  masonry?: boolean;
 }
 
 const PALETTE: Record<string, { bg: string; text: string }> = {
@@ -40,7 +41,7 @@ function shuffleArray<T>(arr: T[]): T[] {
   return a;
 }
 
-const { index, label, headline, cta, ctaHref, theme, slides, image, captions, layout = 'right', backgroundImage, role, tileHeight } = Astro.props;
+const { index, label, headline, cta, ctaHref, theme, slides, image, captions, layout = 'right', backgroundImage, role, tileHeight, masonry } = Astro.props;
 const displayIndex = String(index + 1).padStart(2, '0');
 
 let items: Array<{ src: string; caption: string; role: string; client: string; tags: string[]; bg: string; text: string; fill: boolean; url: string }> = [];
@@ -110,6 +111,9 @@ const visualCol = isVertical ? '1 / -1' : (isLeft ? '1 / span 4' : '9 / span 4')
 
 const itemsPerView = 3;
 const positionCount = Math.max(1, items.length - itemsPerView + 1);
+
+const hasCaseStudy = Astro.slots.has('caseStudy');
+const hasExamples = Astro.slots.has('examples');
 ---
 
 <section
@@ -118,81 +122,131 @@ const positionCount = Math.max(1, items.length - itemsPerView + 1);
   style={backgroundImage ? `background-image: url('${backgroundImage}');` : undefined}
 >
   {backgroundImage && <div class="space-background-overlay" />}
-  <div class="space-content">
-    <div class="space-text" style={`grid-column: ${textCol};${isVertical ? ' grid-row: 1;' : ''}`}>
-      <span class="space-label font-sans">
-        {label}
-      </span>
-      <h2 class="space-headline font-serif">
-        {headline}
-      </h2>
-      <div class="space-body font-sans">
-        <slot />
+  <div class="space-scroll">
+    <div class="space-content">
+      <div class="space-text" style={`grid-column: ${textCol};${isVertical ? ' grid-row: 1;' : ''}`}>
+        <span class="space-label font-sans">
+          {label}
+        </span>
+        <h2 class="space-headline font-serif">
+          {headline}
+        </h2>
+        <div class="space-body font-sans">
+          <slot />
+        </div>
+        {cta && (
+          <a href={ctaHref || '#'} class="space-cta">
+            {cta}
+            <span class="space-cta-arrow">&#8594;</span>
+          </a>
+        )}
       </div>
-      {cta && (
-        <a href={ctaHref || '#'} class="space-cta">
-          {cta}
-          <span class="space-cta-arrow">&#8594;</span>
-        </a>
-      )}
-    </div>
-    {showVisual && (
-      <div class="space-visual" style={`grid-column: ${visualCol};${isVertical ? ' grid-row: 2;' : ''}`}>
-        <div class={`space-visual-inner font-serif`}>
-          {isSlider ? (
-            <div class="carousel" data-position-count={positionCount} data-items-per-view={itemsPerView} style={tileHeight ? `--tile-height: ${tileHeight}px;` : undefined}>
-              <div class="carousel-track">
-                {items.map((item, itemIdx) => (
-                  <div class={`carousel-item ${item.fill ? 'is-fill' : ''}`} data-item={itemIdx}>
-                    <div class="carousel-item-image" style={!item.fill ? `background-color: ${item.bg};` : undefined}>
-                      <img src={item.src} alt={item.caption} loading="lazy" />
+      {showVisual && (
+        <div class="space-visual" style={`grid-column: ${visualCol};${isVertical ? ' grid-row: 2;' : ''}`}>
+          <div class={`space-visual-inner font-serif`}>
+            {isSlider ? (
+              masonry ? (
+                <div class="masonry-grid">
+                  {items.map((item, itemIdx) => (
+                    <div class="masonry-item" data-item={itemIdx}>
+                      <div class="masonry-item-image">
+                        <img src={item.src} alt={item.caption} loading="lazy" />
+                      </div>
+                      <div class="masonry-item-meta">
+                        {item.client && (
+                          <span class="carousel-client font-sans">{item.client}</span>
+                        )}
+                        {item.caption && (
+                          item.url ? (
+                            <a href={item.url} class="carousel-caption font-sans" target="_blank" rel="noopener noreferrer">{item.caption}</a>
+                          ) : (
+                            <span class="carousel-caption font-sans">{item.caption}</span>
+                          )
+                        )}
+                        {item.role && (
+                          <span class="carousel-role-text font-sans">{item.role}</span>
+                        )}
+                        {item.tags.length > 0 && (
+                          <div class="carousel-tags">
+                            {item.tags.map((tag) => (
+                              <span class="carousel-tag font-sans">{tag}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div class="carousel-item-meta">
-                      {item.client && (
-                        <span class="carousel-client font-sans">{item.client}</span>
-                      )}
-                      {item.caption && (
-                        item.url ? (
-                          <a href={item.url} class="carousel-caption font-sans" target="_blank" rel="noopener noreferrer">{item.caption}</a>
-                        ) : (
-                          <span class="carousel-caption font-sans">{item.caption}</span>
-                        )
-                      )}
-                      {item.role && (
-                        <span class="carousel-role-text font-sans">{item.role}</span>
-                      )}
-                      {item.tags.length > 0 && (
-                        <div class="carousel-tags">
-                          {item.tags.map((tag) => (
-                            <span class="carousel-tag font-sans">{tag}</span>
-                          ))}
+                  ))}
+                </div>
+              ) : (
+                <div class="carousel" data-position-count={positionCount} data-items-per-view={itemsPerView} style={tileHeight ? `--tile-height: ${tileHeight}px;` : undefined}>
+                  <div class="carousel-track">
+                    {items.map((item, itemIdx) => (
+                      <div class={`carousel-item ${item.fill ? 'is-fill' : ''}`} data-item={itemIdx}>
+                        <div class="carousel-item-image" style={!item.fill ? `background-color: ${item.bg};` : undefined}>
+                          <img src={item.src} alt={item.caption} loading="lazy" />
                         </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {role && (
-                <span class="carousel-role font-sans">{role}</span>
-              )}
-              {positionCount > 1 && (
-                <div class="carousel-nav">
-                  <button class="carousel-prev" aria-label="Previous">&#8592;</button>
-                  <div class="carousel-dots">
-                    {Array.from({ length: positionCount }).map((_, dotIdx) => (
-                      <button class="carousel-dot" data-dot={dotIdx} aria-label={`Go to item ${dotIdx + 1}`} />
+                        <div class="carousel-item-meta">
+                          {item.client && (
+                            <span class="carousel-client font-sans">{item.client}</span>
+                          )}
+                          {item.caption && (
+                            item.url ? (
+                              <a href={item.url} class="carousel-caption font-sans" target="_blank" rel="noopener noreferrer">{item.caption}</a>
+                            ) : (
+                              <span class="carousel-caption font-sans">{item.caption}</span>
+                            )
+                          )}
+                          {item.role && (
+                            <span class="carousel-role-text font-sans">{item.role}</span>
+                          )}
+                          {item.tags.length > 0 && (
+                            <div class="carousel-tags">
+                              {item.tags.map((tag) => (
+                                <span class="carousel-tag font-sans">{tag}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     ))}
                   </div>
-                  <button class="carousel-next" aria-label="Next">&#8594;</button>
+                  {role && (
+                    <span class="carousel-role font-sans">{role}</span>
+                  )}
+                  {positionCount > 1 && (
+                    <div class="carousel-nav">
+                      <button class="carousel-prev" aria-label="Previous">&#8592;</button>
+                      <div class="carousel-dots">
+                        {Array.from({ length: positionCount }).map((_, dotIdx) => (
+                          <button class="carousel-dot" data-dot={dotIdx} aria-label={`Go to item ${dotIdx + 1}`} />
+                        ))}
+                      </div>
+                      <button class="carousel-next" aria-label="Next">&#8594;</button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ) : hasImage ? (
-            <img src={items[0].src} alt={items[0].caption} loading="lazy" />
-          ) : (
-            <slot name="visual" />
-          )}
+              )
+            ) : hasImage ? (
+              <img src={items[0].src} alt={items[0].caption} loading="lazy" />
+            ) : (
+              <slot name="visual" />
+            )}
+          </div>
         </div>
+      )}
+    </div>
+
+    {hasCaseStudy && (
+      <div class="space-case-study">
+        <div class="space-section-label font-sans">Case Study</div>
+        <slot name="caseStudy" />
+      </div>
+    )}
+
+    {hasExamples && (
+      <div class="space-examples">
+        <div class="space-section-label font-sans">More Work</div>
+        <slot name="examples" />
       </div>
     )}
   </div>

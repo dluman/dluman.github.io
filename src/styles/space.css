@@ -1,17 +1,60 @@
 /* ── Scroll container ── */
 .spaces-track {
-  width: 100%;
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.spaces-track::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── Each space ── */
 .space {
-  width: 100%;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-snap-align: start;
+}
+
+.space-scroll {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 0 0 120px;
+}
+
+.space-case-study,
+.space-examples {
+  width: min(1200px, 90vw);
+  margin-top: 80px;
+  padding-top: 64px;
+  border-top: 1px solid var(--border-on-dark);
+}
+
+.space-section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 32px;
 }
 
 /* Background image */
@@ -355,6 +398,57 @@ a.carousel-caption:hover {
 .carousel-dot.is-active {
   background: var(--fg-on-dark);
   transform: scale(1.3);
+}
+
+/* Masonry grid */
+.masonry-grid {
+  width: 100%;
+  column-count: 3;
+  column-gap: 16px;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f6f2ee;
+}
+
+.masonry-item-image {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #f6f2ee;
+}
+
+.masonry-item-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.masonry-item-meta {
+  width: 100%;
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
+  .masonry-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .masonry-grid {
+    column-count: 1;
+  }
 }
 
 /* Vertical layout */
