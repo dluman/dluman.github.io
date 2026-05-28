@@ -18,5 +18,11 @@ const { title = 'Douglas Luman' } = Astro.props;
 </head>
 <body>
   <slot />
+  <script>
+    document.querySelectorAll('.space-body a').forEach(link => {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+    });
+  </script>
 </body>
 </html>

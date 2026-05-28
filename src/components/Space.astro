@@ -6,11 +6,19 @@ export interface Props {
   cta?: string;
   ctaHref?: string;
   theme: string;
-  image?: string;
+  image?: string | string[];
 }
 
 const { index, label, headline, cta, ctaHref, theme, image } = Astro.props;
 const displayIndex = String(index + 1).padStart(2, '0');
+
+const images = image
+  ? Array.isArray(image)
+    ? image
+    : [image]
+  : [];
+const imageCount = images.length;
+const isTiled = imageCount > 1;
 ---
 
 <section
@@ -36,9 +44,13 @@ const displayIndex = String(index + 1).padStart(2, '0');
       )}
     </div>
     <div class="space-visual">
-      <div class="space-visual-inner font-serif">
-        {image ? (
-          <img src={image} alt="" loading="lazy" />
+      <div class={`space-visual-inner ${isTiled ? 'is-tiled' : ''} font-serif`}>
+        {isTiled ? (
+          images.map((src, i) => (
+            <img src={src} alt="" loading="lazy" />
+          ))
+        ) : images.length === 1 ? (
+          <img src={images[0]} alt="" loading="lazy" />
         ) : (
           <slot name="visual">{displayIndex}</slot>
         )}
