@@ -1,0 +1,48 @@
+---
+export interface Props {
+  index: number;
+  label: string;
+  headline: string;
+  cta?: string;
+  ctaHref?: string;
+  theme: string;
+  image?: string;
+}
+
+const { index, label, headline, cta, ctaHref, theme, image } = Astro.props;
+const displayIndex = String(index + 1).padStart(2, '0');
+---
+
+<section
+  class={`space ${theme}`}
+  data-index={index}
+>
+  <div class="space-content">
+    <div class="space-text">
+      <span class="space-label font-sans">
+        {label}
+      </span>
+      <h2 class="space-headline font-serif">
+        {headline}
+      </h2>
+      <div class="space-body font-sans">
+        <slot />
+      </div>
+      {cta && (
+        <a href={ctaHref || '#'} class="space-cta">
+          {cta}
+          <span class="space-cta-arrow">&#8594;</span>
+        </a>
+      )}
+    </div>
+    <div class="space-visual">
+      <div class="space-visual-inner font-serif">
+        {image ? (
+          <img src={image} alt="" loading="lazy" />
+        ) : (
+          <slot name="visual">{displayIndex}</slot>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

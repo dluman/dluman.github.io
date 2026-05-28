@@ -1,0 +1,48 @@
+/* Entrance animations — default hidden */
+.space-text > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+.space.is-active .space-text > *:nth-child(1) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0ms;
+}
+
+.space.is-active .space-text > *:nth-child(2) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 100ms;
+}
+
+.space.is-active .space-text > *:nth-child(3) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 200ms;
+}
+
+.space.is-active .space-text > *:nth-child(4) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 300ms;
+}
+
+.space.is-active .space-text > *:nth-child(5) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 400ms;
+}
+
+/* Visual element entrance */
+.space-visual-inner {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: transform 0.8s var(--ease-out), opacity 0.8s var(--ease-out);
+}
+
+.space.is-active .space-visual-inner {
+  opacity: 0.9;
+  transform: scale(1);
+}

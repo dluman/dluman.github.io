@@ -1,0 +1,136 @@
+/* ── Dark spaces (light text) ── */
+.space--navy {
+  background: var(--navy);
+  color: var(--fg-on-dark);
+}
+.space--navy .space-label {
+  color: var(--blue);
+}
+.space--navy .space-body {
+  color: var(--blue);
+}
+.space--navy a {
+  color: var(--peach);
+}
+.space--navy a:hover {
+  color: var(--coral);
+}
+.space--navy .space-visual-inner {
+  background: linear-gradient(135deg, #024670, #0469a8);
+  box-shadow: 0 0 0 1px rgba(173, 197, 217, 0.2);
+}
+
+.space--rose {
+  background: var(--rose);
+  color: var(--fg-on-dark);
+}
+.space--rose .space-label {
+  color: rgba(246, 242, 238, 0.7);
+}
+.space--rose .space-body {
+  color: rgba(246, 242, 238, 0.85);
+}
+.space--rose a {
+  color: var(--peach);
+}
+.space--rose a:hover {
+  color: var(--coral);
+}
+.space--rose .space-visual-inner {
+  background: linear-gradient(135deg, #c98a95, #e8aab5);
+  box-shadow: 0 0 0 1px rgba(246, 242, 238, 0.2);
+}
+
+/* ── Light spaces (dark text) ── */
+.space--blue {
+  background: var(--blue);
+  color: var(--fg);
+}
+.space--blue .space-label {
+  color: var(--navy);
+  opacity: 0.7;
+}
+.space--blue .space-body {
+  color: var(--fg);
+  opacity: 0.8;
+}
+.space--blue .space-cta {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.space--blue .space-cta:hover {
+  background: var(--fg);
+  color: var(--fg-on-dark);
+}
+.space--blue a {
+  color: var(--navy);
+}
+.space--blue a:hover {
+  color: #024670;
+}
+.space--blue .space-visual-inner {
+  background: linear-gradient(135deg, #9db5c9, #bdd5e9);
+  box-shadow: 0 0 0 1px rgba(26, 26, 46, 0.1);
+}
+
+.space--peach {
+  background: var(--peach);
+  color: var(--fg);
+}
+.space--peach .space-label {
+  color: var(--navy);
+  opacity: 0.7;
+}
+.space--peach .space-body {
+  color: var(--fg);
+  opacity: 0.8;
+}
+.space--peach .space-cta {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.space--peach .space-cta:hover {
+  background: var(--fg);
+  color: var(--fg-on-dark);
+}
+.space--peach a {
+  color: var(--navy);
+}
+.space--peach a:hover {
+  color: #024670;
+}
+.space--peach .space-visual-inner {
+  background: linear-gradient(135deg, #e2a875, #facc95);
+  box-shadow: 0 0 0 1px rgba(26, 26, 46, 0.1);
+}
+
+.space--coral {
+  background: var(--coral);
+  color: var(--fg);
+}
+.space--coral .space-label {
+  color: var(--navy);
+  opacity: 0.7;
+}
+.space--coral .space-body {
+  color: var(--fg);
+  opacity: 0.8;
+}
+.space--coral .space-cta {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.space--coral .space-cta:hover {
+  background: var(--fg);
+  color: var(--fg-on-dark);
+}
+.space--coral a {
+  color: var(--navy);
+}
+.space--coral a:hover {
+  color: #024670;
+}
+.space--coral .space-visual-inner {
+  background: linear-gradient(135deg, #e29478, #fab498);
+  box-shadow: 0 0 0 1px rgba(26, 26, 46, 0.1);
+}

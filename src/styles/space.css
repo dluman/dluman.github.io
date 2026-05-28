@@ -1,0 +1,141 @@
+/* ── Scroll container ── */
+.spaces-track {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* ── Each space ── */
+.space {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Content grid */
+.space-content {
+  position: relative;
+  z-index: 2;
+  width: min(1200px, 90vw);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  padding: 64px 0 48px;
+}
+
+.space-text {
+  grid-column: 2 / span 6;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.space-visual {
+  grid-column: 9 / span 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Typography */
+.space-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.space-headline {
+  font-size: clamp(36px, 5.5vw, 72px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.space-body {
+  font-size: clamp(14px, 1.2vw, 18px);
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.space-body > * + * {
+  margin-top: 1.2em;
+}
+
+.space-body p {
+  margin: 0;
+}
+
+.space-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out);
+  width: fit-content;
+  margin-top: 8px;
+}
+
+.space-cta:hover {
+  background: currentColor;
+}
+
+.space-cta-arrow {
+  font-size: 16px;
+}
+
+/* Visual element */
+.space-visual-inner {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 12px;
+  border: 1px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(48px, 8vw, 120px);
+  font-weight: 700;
+  opacity: 0.9;
+  transition: transform 0.8s var(--ease-out), opacity 0.8s var(--ease-out);
+  transform: scale(0.92);
+  overflow: hidden;
+}
+
+.space-visual-inner :is(img, video, svg) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.space-visual-inner > * {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .space-text {
+    grid-column: 1 / -1;
+  }
+  .space-visual {
+    display: none;
+  }
+}

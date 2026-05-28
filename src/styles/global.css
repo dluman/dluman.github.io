@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Palette extracted from colors.png */
+  --navy: #03588c;
+  --blue: #adc5d9;
+  --rose: #d99aa5;
+  --peach: #f2b885;
+  --coral: #f2a488;
+
+  /* Semantic roles */
+  --bg-void: #f6f2ee;
+  --fg: #1a1a2e;
+  --fg-on-dark: #f6f2ee;
+  --accent: var(--coral);
+  --muted: #7a7a8a;
+  --border: rgba(26, 26, 46, 0.12);
+  --border-on-dark: rgba(246, 242, 238, 0.15);
+  --overlay: rgba(3, 88, 140, 0.35);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --font-serif: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
+  --font-sans: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-sans);
+  background: var(--bg-void);
+  color: var(--fg);
+  overflow: hidden;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+main::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: rotate(45deg) translateY(0); }
+  50% { transform: rotate(45deg) translateY(6px); }
+}

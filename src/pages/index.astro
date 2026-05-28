@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ScrollController from '../components/ScrollController';
+import '../styles/global.css';
+import '../styles/themes.css';
+import '../styles/space.css';
+import '../styles/navigation.css';
+import '../styles/animations.css';
+
+const spaceModules = Object.entries(import.meta.glob('../spaces/*.mdx', { eager: true }))
+  .sort(([pathA], [pathB]) => pathA.localeCompare(pathB));
+
+const total = spaceModules.length;
+const labels = spaceModules.map(([, mod]) => {
+  const fm = (mod as any).frontmatter;
+  return fm?.label || '';
+});
+---
+
+<Layout title="Horizontal Scroll Spaces">
+  <ScrollController client:load total={total} labels={labels} />
+
+  <main class="spaces-track" tabindex="0">
+    {spaceModules.map(([, mod]) => {
+      const Component = (mod as any).default;
+      return <Component />;
+    })}
+  </main>
+</Layout>
